@@ -1,0 +1,42 @@
+<!doctype html>  
+<html lang="en">  
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script>
+   
+    var z = $(document);
+    var isConnected = false;
+    var socket = io.connect('http://draw-bindasrishant.c9users.io');
+     socket.on('connect', function(data) {
+        socket.emit('join', 'Hello World from client');
+        socket.on('messages', function(data) {
+                alert(data);
+        });
+    });
+    
+    socket.on('test',function(data) {
+        console.log(data);
+    })
+    
+    z.ready(function(){
+    z.mousemove(function(event){
+            
+        $("span").text(event.pageX + ", " + event.pageY);
+           socket.emit('send', {
+                 x:event.pageX,
+                 y:event.pageY
+                });
+            });
+        });
+</script>
+</head>
+<body>
+
+<p>Mouse is at coordinates: <span></span>.</p>
+
+</body>
+</html>  
