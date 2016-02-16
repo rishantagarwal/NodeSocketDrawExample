@@ -6,6 +6,8 @@
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>   
+    
+   
     <script>
    
     var z = $(document);
@@ -22,21 +24,83 @@
         console.log(data);
     })
     
-    z.ready(function(){
+    /*z.ready(function(){
     z.mousemove(function(event){
             
-        $("span").text(event.pageX + ", " + event.pageY);
+    //    $("span").text(event.pageX + ", " + event.pageY);
            socket.emit('send', {
                  x:event.pageX,
                  y:event.pageY
                 });
             });
-        });
+        });*/
 </script>
 </head>
-<body>
+<body></body>
+<script type="text/javascript">
+// create canvas element and append it to document body
+var canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
 
-<p>Mouse is at coordinates: <span></span>.</p>
+// some hotfixes... ( ≖_≖)
+document.body.style.margin = 0;
+canvas.style.position = 'fixed';
 
-</body>
+// get canvas 2D context and set him correct size
+var ctx = canvas.getContext('2d');
+resize();
+
+// last known position
+var pos = { x: 0, y: 0 };
+
+window.addEventListener('resize', resize);
+document.addEventListener('mousemove', draw);
+document.addEventListener('mousedown', setPosition);
+document.addEventListener('mouseenter', setPosition);
+socket.on('recieve',function(e){
+  ctx.beginPath(); // begin
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#c0392b';
+
+  ctx.moveTo(e.clientX, e.clientY); // from
+  setPosition(e);
+  ctx.lineTo(e.clientX,e.clientY); // to
+
+  ctx.stroke(); // draw it!
+});
+
+// new position from mouse event
+function setPosition(e) {
+  pos.x = e.clientX;
+  pos.y = e.clientY;
+  socket.emit('send', e);
+}
+
+// resize canvas
+function resize() {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+}
+
+function draw(e) {
+  // mouse left button must be pressed
+  if (e.buttons !== 1) return;
+
+  ctx.beginPath(); // begin
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#c0392b';
+
+  ctx.moveTo(pos.x, pos.y); // from
+  setPosition(e);
+  ctx.lineTo(pos.x, pos.y); // to
+
+  ctx.stroke(); // draw it!
+}
+
+</script>
+
 </html>  

@@ -13,6 +13,9 @@ app.get('/remote', function(req, res,next) {
     res.sendFile(__dirname + '/remote.html');
 });
 
+app.get('/draw', function(req, res,next) {  
+    res.sendFile(__dirname + '/draw.html');
+});
 app.all('*', function(req, res, next) {
        res.header("Access-Control-Allow-Origin", "*");
        res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -26,11 +29,11 @@ io.on('connection', function(client) {
         
     client.on('send',function(recvData) {
         console.log(recvData);
-        client.broadcast.emit('test','yo');
+        client.broadcast.emit('recieve',recvData);
     });    
     
     client.on('join', function(data) {
-        console.log(data);
+        //console.log(data);
         client.emit('messages', 'Hello from server');
     });
 
