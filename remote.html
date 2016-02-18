@@ -58,24 +58,32 @@ document.addEventListener('mousemove', draw);
 document.addEventListener('mousedown', setPosition);
 document.addEventListener('mouseenter', setPosition);
 socket.on('recieve',function(e){
+  console.log(e);
   ctx.beginPath(); // begin
 
   ctx.lineWidth = 5;
   ctx.lineCap = 'round';
   ctx.strokeStyle = '#c0392b';
 
-  ctx.moveTo(e.clientX, e.clientY); // from
-  setPosition(e);
-  ctx.lineTo(e.clientX,e.clientY); // to
+  ctx.moveTo(pos.x, pos.y); // from
+  setPositionFromSocket(e.e,e.clientX,e.clientY);
+  ctx.lineTo(pos.x,pos.y); // to
 
   ctx.stroke(); // draw it!
 });
 
 // new position from mouse event
 function setPosition(e) {
+  console.log("oo"+e);
   pos.x = e.clientX;
   pos.y = e.clientY;
-  socket.emit('send', e);
+  socket.emit('send', {e:e,clientX:e.clientX,clientY:e.clientY});
+}
+
+function setPositionFromSocket(e,x,y) {
+  pos.x = x;
+  pos.y = y;
+  
 }
 
 // resize canvas
