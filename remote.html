@@ -6,8 +6,6 @@
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>   
-    
-   
     <script>
    
     var z = $(document);
@@ -16,24 +14,10 @@
      socket.on('connect', function(data) {
         socket.emit('join', 'Hello World from client');
         socket.on('messages', function(data) {
-                alert(data);
+                console.log(data);
         });
     });
     
-    socket.on('test',function(data) {
-        console.log(data);
-    })
-    
-    /*z.ready(function(){
-    z.mousemove(function(event){
-            
-    //    $("span").text(event.pageX + ", " + event.pageY);
-           socket.emit('send', {
-                 x:event.pageX,
-                 y:event.pageY
-                });
-            });
-        });*/
 </script>
 </head>
 <body></body>
@@ -57,40 +41,53 @@ window.addEventListener('resize', resize);
 document.addEventListener('mousemove', draw);
 document.addEventListener('mousedown', setPosition);
 document.addEventListener('mouseenter', setPosition);
-socket.on('recieve',function(e){
-  console.log(e);
-  ctx.beginPath(); // begin
-
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = '#c0392b';
-
-  ctx.moveTo(pos.x, pos.y); // from
-  setPositionFromSocket(e.e,e.clientX,e.clientY);
-  ctx.lineTo(pos.x,pos.y); // to
-
-  ctx.stroke(); // draw it!
-});
 
 // new position from mouse event
 function setPosition(e) {
-  console.log("oo"+e);
+  //console.log("oo"+e);
   pos.x = e.clientX;
   pos.y = e.clientY;
-  socket.emit('send', {e:e,clientX:e.clientX,clientY:e.clientY});
+ /* socket.emit('setPosition',{
+    e:e,
+    clientX:e.clientX,
+    clientY:e.clientY});*/
 }
 
+/*socket.on('setPosition1',function(e){
+  
+   console.log(e);
+   setPositionFromSocket(e.e,e.clientX,e.clientY);
+   pos.x = e.clientX;
+   pos.y = e.clientY;
+})*/
+
+//new position from Socket data
 function setPositionFromSocket(e,x,y) {
+   console.log("setposition");
   pos.x = x;
   pos.y = y;
-  
 }
 
 // resize canvas
 function resize() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
+ /* socket.emit('resize',{
+    height:window.innerHeight,
+    width:window.innerWidth
+  });*/
 }
+
+/*socket.on('resize1',function(data) {
+    console.log("resize");
+    ctx.canvas.height = data.height;
+    ctx.canvas.width = data.weight;
+    window.innerHeight = data.height;
+    window.innerWidth = data.width;
+})*/
+
+
+var payload={to:{x:'',y:''},from:{x:'',y:''}};
 
 function draw(e) {
   // mouse left button must be pressed
@@ -102,12 +99,38 @@ function draw(e) {
   ctx.lineCap = 'round';
   ctx.strokeStyle = '#c0392b';
 
+  console.log(pos);
+  payload.from.x = pos.x;
+  payload.from.y = pos.y;
   ctx.moveTo(pos.x, pos.y); // from
   setPosition(e);
   ctx.lineTo(pos.x, pos.y); // to
-
+  payload.to.x=pos.x;
+  payload.to.y=pos.y;
+  console.log(payload);
   ctx.stroke(); // draw it!
+  socket.emit('draw',payload);
+  
 }
+
+socket.on('draw1',function(payload) {
+ /* console.log("draw");
+  console.log(pos);*/
+  //console.log(e);
+  ctx.beginPath(); // begin
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#c0392b';
+
+  //ctx.moveTo(pos.x, pos.y); // from
+  ctx.moveTo(payload.from.x,payload.from.y);
+  //setPositionFromSocket(e.e,e.clientX,e.clientY);
+  //ctx.lineTo(pos.x, pos.y); // to
+  ctx.lineTo(payload.to.x,payload.to.y);
+  console.log(pos);
+  ctx.stroke(); // draw it!
+})
 
 </script>
 

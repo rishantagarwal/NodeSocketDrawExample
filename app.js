@@ -27,10 +27,21 @@ io.set('origins', '*:*');
 io.on('connection', function(client) {  
     console.log('Client connected...');
         
-    client.on('send',function(recvData) {
+    client.on('setPosition',function(recvData) {
         console.log(recvData);
-        client.broadcast.emit('recieve',recvData);
-    });    
+        client.broadcast.emit('setPosition1',recvData);
+    });   
+    
+    client.on('resize',function(recvData) {
+        console.log(recvData);
+        client.broadcast.emit('resize1',recvData);
+    });  
+    
+    client.on('draw',function(recvData) {
+        console.log(recvData);
+        client.broadcast.emit('draw1',recvData);
+    });  
+    
     
     client.on('join', function(data) {
         //console.log(data);
