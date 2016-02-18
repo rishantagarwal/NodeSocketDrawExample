@@ -21,7 +21,7 @@ io.on('connection', function(client) {
     console.log('Client connected...');
         
    client.on('draw',function(recvData) {
-        //console.log(recvData);
+        console.log(recvData);
         client.broadcast.emit('draw1',recvData);
     });  
     
