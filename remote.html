@@ -47,23 +47,11 @@ function setPosition(e) {
   //console.log("oo"+e);
   pos.x = e.clientX;
   pos.y = e.clientY;
- /* socket.emit('setPosition',{
-    e:e,
-    clientX:e.clientX,
-    clientY:e.clientY});*/
 }
-
-/*socket.on('setPosition1',function(e){
-  
-   console.log(e);
-   setPositionFromSocket(e.e,e.clientX,e.clientY);
-   pos.x = e.clientX;
-   pos.y = e.clientY;
-})*/
 
 //new position from Socket data
 function setPositionFromSocket(e,x,y) {
-   console.log("setposition");
+  // console.log("setposition");
   pos.x = x;
   pos.y = y;
 }
@@ -99,7 +87,7 @@ function draw(e) {
   ctx.lineCap = 'round';
   ctx.strokeStyle = '#c0392b';
 
-  console.log(pos);
+ // console.log(pos);
   payload.from.x = pos.x;
   payload.from.y = pos.y;
   ctx.moveTo(pos.x, pos.y); // from
@@ -107,28 +95,22 @@ function draw(e) {
   ctx.lineTo(pos.x, pos.y); // to
   payload.to.x=pos.x;
   payload.to.y=pos.y;
-  console.log(payload);
+ // console.log(payload);
   ctx.stroke(); // draw it!
   socket.emit('draw',payload);
   
 }
 
 socket.on('draw1',function(payload) {
- /* console.log("draw");
-  console.log(pos);*/
-  //console.log(e);
   ctx.beginPath(); // begin
 
   ctx.lineWidth = 5;
   ctx.lineCap = 'round';
   ctx.strokeStyle = '#c0392b';
 
-  //ctx.moveTo(pos.x, pos.y); // from
-  ctx.moveTo(payload.from.x,payload.from.y);
-  //setPositionFromSocket(e.e,e.clientX,e.clientY);
-  //ctx.lineTo(pos.x, pos.y); // to
-  ctx.lineTo(payload.to.x,payload.to.y);
-  console.log(pos);
+  ctx.moveTo(payload.from.x,payload.from.y); //from
+  ctx.lineTo(payload.to.x,payload.to.y); // to
+
   ctx.stroke(); // draw it!
 })
 
